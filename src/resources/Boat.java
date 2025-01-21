@@ -1,5 +1,6 @@
 package resources;
 
+import rw_ui.GraphicController;
 
 public class Boat extends Thread {
 		/** position specify if boat is in A (position = 0) or in B (position = 1) */
@@ -8,19 +9,23 @@ public class Boat extends Thread {
 		private int workTime = 0;
 		/** synchronization object */
 		protected Synchronizer synchro = new Synchronizer();
+		/** controller */
+		protected final GraphicController controller;
 
-		public Boat(Runnable task, String name, int position, int workTime, Synchronizer synchro) {
+		public Boat(Runnable task, String name, int position, int workTime, Synchronizer synchro, GraphicController controller) {
 			super(task, name);
 			this.position = position;
 			this.workTime = workTime;
 			this.synchro = synchro;
+			this.controller = controller;
 		}
 
-		public Boat(String name, int position, int workTime, Synchronizer synchro) {
+		public Boat(String name, int position, int workTime, Synchronizer synchro, GraphicController controller) {
 			super(name);
 			this.position = position;
 			this.workTime = workTime;
 			this.synchro = synchro;
+			this.controller = controller;
 		}
 
 		protected void work() {
@@ -41,11 +46,22 @@ public class Boat extends Thread {
 			String name = this.getName();
 			do {
 				System.out.printf("le bateau %s cherche a passer\n", name);
+				this.controller.wantToRead(name);
+				this.synchro.askRead();
+				this.controller.read(name);
 
-				System.out.printf("le lecteur %s lit\n", name);
+				System.out.printf("le bateau %s entre dans l'ecluse\n", name);
 				work();
-
-				System.out.printf("le lecteur %s a fini de lire\n", name);
+				
+				System.out.printf("le bateau %s attend\n", name);
+				
+				System.out.printf("le bateau %s sort de l'ecluse\n", name);
+				work();
+				
+				this.synchro.endRead();
+				this.controller.endReading(name);
+				System.out.printf("le bateau %s est passé\n", name);
+				
 			} while (true);
 		}
 
