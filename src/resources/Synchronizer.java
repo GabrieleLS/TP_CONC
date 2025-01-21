@@ -1,28 +1,19 @@
 package resources;
 
 /**
- * Class in charge of the synchronization between workers. It gives priority to writers. It uses Java monitors for mutual exclusion
+ * Class in charge of the synchronization between boats. It gives priority to boats with the same height. It uses Java monitors for mutual exclusion
  **/
 public class Synchronizer {
 	// State variables
-	protected int writers = 0;
-	protected int readers = 0;
+	protected int boat = 0;
 	protected int waiting = 0;
 	
-	protected boolean invariant(int readers, int writers) {
-		return (((writers == 0 && readers >= 0) || (writers == 1 && readers == 0)) && waiting == 0);
+	protected boolean canUse() {
+		return this.boat==0;
 	}
 	
-	protected boolean canRead() {
-		return this.invariant(this.readers + 1, this.writers);
-	}
-	
-	protected boolean canWrite() {
-		return this.invariant(this.readers, this.writers + 1);
-	}
-	
-	public synchronized void askWriting() {
-		while (!canWrite()) {
+	public synchronized void askUsing() {
+		while (!canUse()) {
 			this.waiting++;
 			try {
 				wait();
@@ -30,26 +21,11 @@ public class Synchronizer {
 			}
 			this.waiting--;
 		}
-		this.writers++;
+		this.boat++;
 	}
 	
-	public synchronized void askRead() {
-		while (!canRead()) {
-			try {
-				wait();
-			} catch (Exception e) {
-			}
-		}
-		this.readers++;
-	}
-	
-	public synchronized void endWriting() {
-		this.writers--;
-		notifyAll();
-	}
-	
-	public synchronized void endRead() {
-		this.readers--;
+	public synchronized void endUsing() {
+		this.boat--;
 		notifyAll();
 	}
 	
