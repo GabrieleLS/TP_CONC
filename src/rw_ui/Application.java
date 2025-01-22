@@ -2,23 +2,28 @@ package rw_ui;
 
 import mvc.ListModel;
 import resources.Boat;
+import resources.Ecluse;
 import resources.Synchronizer;
 
 
 public class Application {
 	public static void main(String[] args) {
-		ListModel<String> workingList = new ListModel<>();
-		ListModel<String> idleReaders = new ListModel<>();
-		ListModel<String> idleWriters = new ListModel<>();
-		RWFrame frame = new RWFrame(workingList, idleWriters, idleReaders);
-		GraphicController controller = new GraphicController(workingList, idleWriters, idleReaders);
+		ListModel<String> ecluseList = new ListModel<>();
+		ListModel<String> idleBoatA = new ListModel<>();
+		ListModel<String> idleBoatB = new ListModel<>();
+		ListModel<String> ecluseEtat = new ListModel<>();
+		RWFrame frame = new RWFrame(ecluseList, idleBoatB, idleBoatA, ecluseEtat);
+		Ecluse ecluse = new Ecluse();
+		GraphicController controller = new GraphicController(ecluseList, idleBoatB, idleBoatA, ecluseEtat, ecluse);
 		Synchronizer synchro = new Synchronizer();
-		frame.register(new Boat("Lecteur1", 10000, 4000, synchro, controller));
-		frame.register(new Boat("Lecteur2", 6000, 15000, synchro, controller));
-		frame.register(new Boat("Lecteur3", 4000, 20000, synchro, controller));
-		frame.register(new Boat("Redacteur1", 5000, 15000, synchro, controller));
-		frame.register(new Boat("Redacteur2", 6000, 9000, synchro, controller));
+		frame.register(new Boat("Boat1", 0, 3000, synchro, controller, ecluse));
+		frame.register(new Boat("Boat2", 0, 3000, synchro, controller, ecluse));
+		frame.register(new Boat("Boat3", 1, 3000, synchro, controller, ecluse));
+		frame.register(new Boat("Boat4", 1, 3000, synchro, controller, ecluse));
+		frame.register(new Boat("Boat5", 1, 3000, synchro, controller, ecluse));
 
 		System.out.println("Appuyez sur demarrer");
+		System.out.println("l'ecluse est en A");
+		ecluseEtat.add("l'ecluse est en A");
 	}
 }

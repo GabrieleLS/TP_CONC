@@ -11,24 +11,30 @@ public class Boat extends Thread {
 		protected Synchronizer synchro = new Synchronizer();
 		/** controller */
 		protected GraphicController controller;
+		private Ecluse ecluse;
 
-		public Boat(Runnable task, String name, int position, int workTime, Synchronizer synchro, GraphicController controller) {
+		public Boat(Runnable task, String name, int position, int workTime, Synchronizer synchro, GraphicController controller, Ecluse ecluse) {
 			super(task, name);
 			this.position = position;
 			this.workTime = workTime;
 			this.synchro = synchro;
 			this.controller = controller;
+			this.ecluse = ecluse;
 		}
 
-		public Boat(String name, int position, int workTime, Synchronizer synchro, GraphicController controller) {
+		public Boat(String name, int position, int workTime, Synchronizer synchro, GraphicController controller, Ecluse ecluse) {
 			super(name);
 			this.position = position;
 			this.workTime = workTime;
 			this.synchro = synchro;
 			this.controller = controller;
+			this.ecluse = ecluse;
 		}
 
 		protected void work() {
+			waitFor(this.workTime);
+		}
+		protected void rest() {
 			waitFor(this.workTime);
 		}
 
@@ -45,12 +51,20 @@ public class Boat extends Thread {
 		public void run() {
 			String name = this.getName();
 			do {
-				System.out.printf("le bateau %s cherche a passer\n", name);
-
-				System.out.printf("le lecteur %s lit\n", name);
+				rest();
+				if (this.position==0) {
+					this.controller.wantToPassA(name);
+				} else {
+					this.controller.wantToPassB(name);
+				}
+				this.synchro.askUsing(this.ecluse, this.position, this.controller.ecluseEtat);
+				this.controller.use(name);
+				this.controller.mvtEcluse();
 				work();
-
-				System.out.printf("le lecteur %s a fini de lire\n", name);
+				this.controller.endUsing(name);
+				waitFor(1000);
+				this.synchro.endUsing();
+				
 			} while (true);
 		}
 

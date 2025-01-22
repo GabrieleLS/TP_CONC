@@ -1,10 +1,17 @@
 package resources;
 
 public class Ecluse {
+	public int position;
 
 	public Ecluse() {
-		// TODO Auto-generated constructor stub
-		//texte
+		this.position = 0;
 	}
-
+	
+	public void change() {
+		if (position==0) {
+			position = 1;
+		} else {
+			position = 0;
+		}
+	}
 }

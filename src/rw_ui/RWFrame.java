@@ -27,8 +27,8 @@ public class RWFrame extends JFrame {
 			boat.start();
 	}
 
-	public RWFrame(ListModel<String> workingList, ListModel<String> idleWriters, ListModel<String> idleReaders) {
-		super("Lecteur Redacteur");
+	public RWFrame(ListModel<String> ecluseList, ListModel<String> idleBoatA, ListModel<String> idleBoatB, ListModel<String> ecluseEtat) {
+		super("Ecluse");
 
 		JButton quitButton = new JButton("Quitter");
 		quitButton.addActionListener(new Quit());
@@ -41,10 +41,10 @@ public class RWFrame extends JFrame {
 		
 		JPanel panel = new JPanel(new BorderLayout());
 		
-		panel.add("West", createPanel(idleReaders, "Lecteurs en attente"));
-		panel.add("Center", createPanel(workingList, "a l'interieur de la BD"));
-		panel.add("East", createPanel(idleWriters, "Redacteurs en attente"));
-		panel.add("South", createPanel(idleWriters, "Redacteurs en attente"));
+		panel.add("West", createPanel(idleBoatB, "Bateau en B"));
+		panel.add("Center", createPanel(ecluseList, "dans l'Ecluse"));
+		panel.add("East", createPanel(idleBoatA, "Bateau en A"));
+		panel.add("South", createPanel(ecluseEtat, "Etat de l'ecluse"));
 		
 		add("Center", panel);
 
@@ -62,7 +62,7 @@ public class RWFrame extends JFrame {
 	}
 
 	/**
-	 * @param reader register the reader
+	 * @param reader register the boat
 	 */
 	public void register(Boat boat) {
 		this.boats.add(boat);
